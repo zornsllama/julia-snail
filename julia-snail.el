@@ -561,8 +561,7 @@ returns \"/home/username/file.jl\"."
 		 (if (string-equal "docker"
 				   (let
 				       ((go-back-file (buffer-file-name julia-snail--repl-go-back-target)))
-				       (if go-back-file (file-remote-p (buffer-file-name go-back-file) 'method) "")))
-
+				       (if go-back-file (file-remote-p go-back-file 'method) "")))
 		     "; addr=\"0.0.0.0\""
 		   ""))
           :repl-buf repl-buf
