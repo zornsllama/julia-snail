@@ -558,7 +558,11 @@ returns \"/home/username/file.jl\"."
         (julia-snail--send-to-repl
          (format "JuliaSnail.start(%d%s) ; # please wait, time-to-first-plot..."
 		 (or julia-snail-remote-port julia-snail-port)
-		 (if (string-equal "docker" (file-remote-p (buffer-file-name julia-snail--repl-go-back-target) 'method))
+		 (if (string-equal "docker"
+				   (let
+				       ((go-back-file (buffer-file-name julia-snail--repl-go-back-target)))
+				       (if go-back-file (file-remote-p (buffer-file-name go-back-file) 'method) "")))
+
 		     "; addr=\"0.0.0.0\""
 		   ""))
           :repl-buf repl-buf
@@ -1143,8 +1147,8 @@ evaluated in the context of MODULE."
                         (generate-new-buffer-name mm-buf-name-base)))
          (mm-buf (get-buffer-create mm-buf-name))
          (decoded-img (base64-decode-string img)))
-    (with-current-buffer julia-snail--repl-go-back-target
-      (spinner-stop))
+    (when julia-snail--repl-go-back-target (with-current-buffer julia-snail--repl-go-back-target
+      (spinner-stop)))
     (with-current-buffer mm-buf
       ;; allow directly-inserted images to be erased
       (fundamental-mode)
@@ -1257,10 +1261,10 @@ To create multiple REPLs, give these variables distinct values (e.g.:
           ;; https://github.com/gcv/julia-snail/issues/11
           (let ((process-environment (append '("JULIA_ERROR_COLOR=red") process-environment)))
             (vterm-mode))
-          (when source-buf
+	  (when source-buf
             (julia-snail--copy-buffer-local-vars source-buf)
             (setq julia-snail--repl-go-back-target source-buf))
-          (julia-snail-repl-mode))))))
+	  (julia-snail-repl-mode))))))
 
 (defun julia-snail-send-line ()
   "Copy the line at the current point into the REPL and run it.
