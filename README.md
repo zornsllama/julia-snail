@@ -81,15 +81,17 @@ Because Julia supports Unicode identifiers and uses them for mathematical symbol
 ```elisp
 (use-package vterm
   :ensure t)
+;; Now run `M-x vterm` and make sure it works!
 
 (use-package julia-snail
   :ensure t
-  :requires vterm
   :hook (julia-mode . julia-snail-mode))
 ```
 
 
 ### Manual setup
+
+Install dependencies as noted in the `Package-Requires` line of `julia-snail.el`. Then make sure `vterm` works, as described in the [Installation](#installation) section.
 
 ```elisp
 (add-to-list 'load-path "/path/to/julia-snail")
